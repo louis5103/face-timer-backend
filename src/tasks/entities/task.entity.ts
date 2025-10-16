@@ -12,8 +12,8 @@ import {
 import { User } from '../../users/entities/user.entity';
 
 @Entity('tasks')
-@Index(['user_id', 'is_active'])
-@Index(['user_id', 'last_used'])
+@Index(['user', 'isActive'])
+@Index(['user', 'lastUsed'])
 export class Task {
   @PrimaryGeneratedColumn('uuid')
   id: string;

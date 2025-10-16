@@ -10,16 +10,13 @@ import {
 import { TimerSession } from './timer-session.entity';
 
 @Entity('session_pauses')
-@Index(['session_id', 'pause_start'])
+// ✅ Class property names (camelCase) must be used in indexes.
+@Index(['session', 'pauseStart'])
 export class SessionPause {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'session_id' })
-  @Index()
-  sessionId: string;
-
-  @ManyToOne(() => TimerSession, { onDelete: 'CASCADE' })
+  @ManyToOne(() => TimerSession, (session) => session.pauses, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'session_id' })
   session: TimerSession;
 
