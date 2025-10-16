@@ -5,12 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  BeforeInsert,
-  BeforeUpdate,
   Index,
   OneToMany,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 
 export enum UserStatus {
   ACTIVE = 'active',
@@ -68,19 +65,4 @@ export class User {
 
   // @OneToMany(() => RefreshToken, (token) => token.user)
   // refreshTokens: RefreshToken[];
-
-  // Password hashing hooks
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() {
-    if (this.password && !this.password.startsWith('$2b$')) {
-      const salt = await bcrypt.genSalt(10);
-      this.password = await bcrypt.hash(this.password, salt);
-    }
-  }
-
-  // Helper method to validate password
-  async validatePassword(plainPassword: string): Promise<boolean> {
-    return bcrypt.compare(plainPassword, this.password);
-  }
 }
