@@ -11,14 +11,10 @@ import { User } from '../../users/entities/user.entity';
 
 @Entity('refresh_tokens')
 @Index(['token'])
-@Index(['user_id', 'is_revoked'])
+@Index(['user', 'isRevoked'])
 export class RefreshToken {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({ name: 'user_id' })
-  @Index()
-  userId: string;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
