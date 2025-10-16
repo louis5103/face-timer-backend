@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Task } from '../../tasks/entities/task.entity';
+import { SessionPause } from './session-pause.entity';
 
 export enum SessionStatus {
   ACTIVE = 'active',
@@ -20,24 +21,17 @@ export enum SessionStatus {
 }
 
 @Entity('timer_sessions')
-@Index(['user_id', 'status'])
-@Index(['task_id', 'start_time'])
-@Index(['user_id', 'start_time'])
+// ✅ Class property names (camelCase) must be used in indexes.
+@Index(['user', 'status'])
+@Index(['task', 'startTime'])
+@Index(['user', 'startTime'])
 export class TimerSession {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'user_id' })
-  @Index()
-  userId: string;
-
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @Column({ name: 'task_id', nullable: true })
-  @Index()
-  taskId: string | null;
 
   @ManyToOne(() => Task, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'task_id' })
@@ -74,9 +68,8 @@ export class TimerSession {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  // Relations (will be activated later)
-  // @OneToMany(() => SessionPause, (pause) => pause.session)
-  // pauses: SessionPause[];
+  @OneToMany(() => SessionPause, (pause) => pause.session)
+  pauses: SessionPause[];
 
   // Helper method to calculate effective duration (excluding pause time)
   getEffectiveDuration(): number {

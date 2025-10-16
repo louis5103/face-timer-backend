@@ -12,18 +12,14 @@ import {
 import { User } from '../../users/entities/user.entity';
 
 @Entity('tasks')
-@Index(['user_id', 'is_active'])
-@Index(['user_id', 'last_used'])
+@Index(['user', 'isActive'])
+@Index(['user', 'lastUsed'])
 export class Task {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'user_id' })
-  @Index()
-  userId: string;
-
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'user_id' }) // DB의 'user_id' 컬럼과 연결
   user: User;
 
   @Column({ length: 200 })

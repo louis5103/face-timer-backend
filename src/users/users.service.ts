@@ -1,6 +1,6 @@
-import { 
-  Injectable, 
-  NotFoundException, 
+import {
+  Injectable,
+  NotFoundException,
   ConflictException,
   BadRequestException,
 } from '@nestjs/common';
