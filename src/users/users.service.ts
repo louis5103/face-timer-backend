@@ -6,12 +6,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
+  private readonly saltRounds = 10;
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -24,7 +27,14 @@ export class UsersService {
       throw new ConflictException('Email already exists');
     }
 
-    const user = this.userRepository.create(createUserDto);
+    // Hash password
+    const hashedPassword = await this.hashPassword(createUserDto.password);
+
+    const user = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+
     return await this.userRepository.save(user);
   }
 
@@ -78,6 +88,11 @@ export class UsersService {
       }
     }
 
+    // Hash password if being updated
+    if (updateUserDto.password) {
+      updateUserDto.password = await this.hashPassword(updateUserDto.password);
+    }
+
     Object.assign(user, updateUserDto);
     return await this.userRepository.save(user);
   }
@@ -89,5 +104,22 @@ export class UsersService {
 
   async count(): Promise<number> {
     return await this.userRepository.count();
+  }
+
+  /**
+   * Hash password using bcrypt
+   */
+  async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, this.saltRounds);
+  }
+
+  /**
+   * Validate password
+   */
+  async validatePassword(
+    plainPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(plainPassword, hashedPassword);
   }
 }
