@@ -5,9 +5,16 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsOrder } from 'typeorm';
 import { Task } from './entities/task.entity';
 import { CreateTaskDto, UpdateTaskDto } from './dto';
+
+export interface TaskStats {
+  total: number;
+  active: number;
+  inactive: number;
+  totalTime: number;
+}
 
 @Injectable()
 export class TasksService {
@@ -26,16 +33,26 @@ export class TasksService {
   }
 
   async findAll(userId: string): Promise<Task[]> {
+    const orderOptions: FindOptionsOrder<Task> = {
+      lastUsed: 'DESC',
+      createdAt: 'DESC',
+    };
+
     return await this.taskRepository.find({
       where: { userId },
-      order: { lastUsed: 'DESC', createdAt: 'DESC' },
+      order: orderOptions,
     });
   }
 
   async findAllActive(userId: string): Promise<Task[]> {
+    const orderOptions: FindOptionsOrder<Task> = {
+      lastUsed: 'DESC',
+      createdAt: 'DESC',
+    };
+
     return await this.taskRepository.find({
       where: { userId, isActive: true },
-      order: { lastUsed: 'DESC', createdAt: 'DESC' },
+      order: orderOptions,
     });
   }
 
@@ -106,14 +123,17 @@ export class TasksService {
     return await this.taskRepository.save(task);
   }
 
-  async getTaskStats(userId: string): Promise<any> {
+  async getTaskStats(userId: string): Promise<TaskStats> {
     const tasks = await this.findAll(userId);
 
     return {
       total: tasks.length,
-      active: tasks.filter((t) => t.isActive).length,
-      inactive: tasks.filter((t) => !t.isActive).length,
-      totalTime: tasks.reduce((sum, t) => sum + Number(t.totalTime), 0),
+      active: tasks.filter((t: Task) => t.isActive).length,
+      inactive: tasks.filter((t: Task) => !t.isActive).length,
+      totalTime: tasks.reduce(
+        (sum: number, t: Task) => sum + Number(t.totalTime),
+        0,
+      ),
     };
   }
 }

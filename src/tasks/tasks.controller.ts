@@ -15,7 +15,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { TasksService } from './tasks.service';
+import { TasksService, TaskStats } from './tasks.service';
 import { CreateTaskDto, UpdateTaskDto, TaskResponseDto } from './dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 
@@ -68,7 +68,7 @@ export class TasksController {
   @ApiOperation({ summary: 'Get task statistics for current user' })
   @ApiResponse({ status: 200, description: 'Task statistics' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getStats(@CurrentUser('id') userId: string) {
+  async getStats(@CurrentUser('id') userId: string): Promise<TaskStats> {
     return this.tasksService.getTaskStats(userId);
   }
 
