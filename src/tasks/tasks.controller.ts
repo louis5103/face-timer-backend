@@ -82,10 +82,7 @@ export class TasksController {
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async findOne(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async findOne(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.tasksService.findOne(id, userId);
   }
 
@@ -131,10 +128,7 @@ export class TasksController {
   @ApiResponse({ status: 404, description: 'Task not found' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async remove(
-    @Param('id') id: string,
-    @CurrentUser('id') userId: string,
-  ) {
+  async remove(@Param('id') id: string, @CurrentUser('id') userId: string) {
     return this.tasksService.remove(id, userId);
   }
 }
