@@ -9,13 +9,13 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RegisterDto {
-  @ApiProperty({ example: 'user@example.com' })
+  @ApiProperty({ example: 'newuser@example.com' })
   @IsEmail({}, { message: 'Invalid email format' })
   @IsNotEmpty()
   @MaxLength(255)
   email: string;
 
-  @ApiProperty({ example: 'StrongP@ssw0rd', minLength: 8 })
+  @ApiProperty({ example: 'Password123!', minLength: 8 })
   @IsString()
   @IsNotEmpty()
   @MinLength(8, { message: 'Password must be at least 8 characters long' })
@@ -26,7 +26,7 @@ export class RegisterDto {
   })
   password: string;
 
-  @ApiProperty({ example: 'John Doe' })
+  @ApiProperty({ example: 'New User' })
   @IsString()
   @IsNotEmpty()
   @MinLength(2)

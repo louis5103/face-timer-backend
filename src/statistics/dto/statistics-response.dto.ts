@@ -57,6 +57,9 @@ export class MonthlyStatsResponseDto {
   @ApiProperty({ description: 'Month' })
   month: number;
 
+  @ApiProperty({ description: 'Total study time in seconds for the month' })
+  totalTime: number;
+
   @ApiProperty({ description: 'Daily breakdown', type: [DailyStatsResponseDto] })
   dailyBreakdown: DailyStatsResponseDto[];
 }
