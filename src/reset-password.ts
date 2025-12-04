@@ -14,13 +14,14 @@ async function bootstrap() {
 
   const user = await userRepository.findOne({ where: { email } });
   if (user) {
-    console.log(`Updating password for ${email}...`);
+    console.log(`Found user: ${user.email}`);
     const hashedPassword = await bcrypt.hash(password, 10);
     
-    // TypeORM update query to bypass entity listeners if any, but here we need explicit update
-    await userRepository.update({ id: user.id }, { password: hashedPassword });
+    // Update entity and save
+    user.password = hashedPassword;
+    await userRepository.save(user);
     
-    console.log('✅ Password updated successfully.');
+    console.log('✅ Password updated successfully using save().');
   } else {
     console.error('❌ User not found!');
   }

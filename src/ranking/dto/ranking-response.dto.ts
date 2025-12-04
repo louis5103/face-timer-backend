@@ -10,8 +10,8 @@ export class RankingUserDto {
   @ApiProperty({ description: 'User rank (1-based)' })
   rank: number;
 
-  @ApiProperty({ description: 'Total study time in seconds' })
-  totalTime: number;
+  @ApiProperty({ description: 'Total study time in seconds', type: 'string', format: 'int64' })
+  totalTime: bigint;
 }
 
 export class RankingResponseDto {

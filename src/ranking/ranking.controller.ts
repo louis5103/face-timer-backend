@@ -4,6 +4,7 @@ import { RankingService } from './ranking.service';
 import { RankingResponseDto } from './dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RankingPeriod } from './entities/ranking.entity';
 
 @ApiTags('Ranking')
 @ApiBearerAuth()
@@ -22,7 +23,7 @@ export class RankingController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
   ) {
-    return this.rankingService.getRanking('daily', page, limit, userId);
+    return this.rankingService.getRanking(RankingPeriod.DAILY, page, limit, userId);
   }
 
   @Get('weekly')
@@ -35,7 +36,7 @@ export class RankingController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
   ) {
-    return this.rankingService.getRanking('weekly', page, limit, userId);
+    return this.rankingService.getRanking(RankingPeriod.WEEKLY, page, limit, userId);
   }
 
   @Get('monthly')
@@ -48,6 +49,6 @@ export class RankingController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
   ) {
-    return this.rankingService.getRanking('monthly', page, limit, userId);
+    return this.rankingService.getRanking(RankingPeriod.MONTHLY, page, limit, userId);
   }
 }
